@@ -72,6 +72,19 @@
       line-height: 1.5;
     }
     .hint a { color: #00d4aa; }
+    .alert {
+      background: rgba(234, 179, 8, 0.15);
+      border: 1px solid rgba(234, 179, 8, 0.4);
+      border-radius: 12px;
+      padding: 14px;
+      margin-top: 20px;
+      text-align: left;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: #fef3c7;
+    }
+    .alert strong { display: block; margin-bottom: 6px; }
+    .alert a { color: #00d4aa; }
   </style>
 </head>
 <body>
@@ -82,10 +95,34 @@
     <a id="download-btn" href="downloads/locally-android.apk" class="btn-download" download="Locally-android.apk">
       Télécharger l’APK pour Android
     </a>
+    <div id="no-apk-message" class="alert" style="display: none;">
+      <strong>Pourquoi rien ne se passe ?</strong>
+      L’APK n’est pas encore en ligne. Il faut le générer sur un ordinateur (Android Studio ou <code>gradlew assembleDebug</code> dans le dossier <code>locally-android</code>), puis l’ajouter dans <code>downloads/</code> et pousser sur GitHub.
+      <br><br>
+      <strong>En attendant</strong> tu peux installer <a href="https://play.google.com/store/apps/details?id=ai.offgridmobile" target="_blank" rel="noopener">Off Grid</a> (Play Store) : même principe, IA 100 % locale. Locally en est une version personnalisée.
+    </div>
     <p class="hint">
       Ouvre cette page sur ton téléphone Android et appuie sur le bouton pour installer.<br>
       Si l’APK n’est pas encore disponible, <a href="downloads/README-DOWNLOAD.md">voici comment le générer</a>.
     </p>
   </div>
+  <script>
+    (function() {
+      var btn = document.getElementById('download-btn');
+      var msg = document.getElementById('no-apk-message');
+      var apkUrl = btn.getAttribute('href');
+      fetch(apkUrl, { method: 'HEAD' }).then(function(r) {
+        if (!r.ok) {
+          msg.style.display = 'block';
+          btn.style.opacity = '0.7';
+          btn.onclick = function(e) { e.preventDefault(); msg.scrollIntoView({ behavior: 'smooth' }); };
+        }
+      }).catch(function() {
+        msg.style.display = 'block';
+        btn.style.opacity = '0.7';
+        btn.onclick = function(e) { e.preventDefault(); msg.scrollIntoView({ behavior: 'smooth' }); };
+      });
+    })();
+  </script>
 </body>
 </html>
